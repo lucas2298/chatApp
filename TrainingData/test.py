@@ -44,7 +44,14 @@ c.execute(
         privateOnnly integer
     )'''
 )
-
+# tag: advice
+# tag: recruitmentInformation
+# tag: fresherInternship
+# tag: fresherInformation
+# tag: noSendCV
+# tag: sendCV
+# tag: employees
+# tag: endConversation
 
 for intent in intents['intents']:
     if (intent['tag'] == 'greeting'):
