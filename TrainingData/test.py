@@ -26,6 +26,7 @@ for intent in intents['intents']:
         "insert into tag values(?, ?)", (intent['tag'], intent['lock'])
     )
 
+# tag: greeting
 c.execute(
     '''create table greeting(
         patterns text,
@@ -34,6 +35,16 @@ c.execute(
         privateOnnly integer
     )'''
 )
+# tag: companyInformation
+c.execute(
+    '''create table greeting(
+        patterns text,
+        responses text,
+        key text,
+        privateOnnly integer
+    )'''
+)
+
 
 for intent in intents['intents']:
     if (intent['tag'] == 'greeting'):
