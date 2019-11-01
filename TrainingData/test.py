@@ -37,7 +37,7 @@ c.execute(
 )
 # tag: companyInformation
 c.execute(
-    '''create table greeting(
+    '''create table companyInformation(
         patterns text,
         responses text,
         key text,
