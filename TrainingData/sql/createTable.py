@@ -2,15 +2,25 @@ import sqlite3
 from employees import Employees
 
 import json
-with open('intents.json', encoding='utf-8') as json_data:
+with open('./TrainingData/sql/intents.json', encoding='utf-8') as json_data:
     intents = json.load(json_data)
 
-conn = sqlite3.connect('./database/chatbot.db')
+conn = sqlite3.connect('./TrainingData/database/chatbot.db')
 
 c = conn.cursor()
 
 c.execute("""drop table tag""")
 c.execute("""drop table greeting""")
+c.execute("""drop table companyInformation""")
+c.execute("""drop table advice""")
+c.execute("""drop table recruitmentInformation""")
+c.execute("""drop table fresherInternship""")
+c.execute("""drop table fresherInformation""")
+c.execute("""drop table noSendCV""")
+c.execute("""drop table sendCV""")
+c.execute("""drop table employees""")
+c.execute("""drop table endConversation""")
+
 
 c.execute(
     """create table tag(
@@ -46,7 +56,7 @@ c.execute(
 )
 # tag: advice
 c.execute(
-    '''create table companyInformation(
+    '''create table advice(
         patterns text,
         responses text,
         key text,
@@ -55,7 +65,7 @@ c.execute(
 )
 # tag: recruitmentInformation
 c.execute(
-    '''create table companyInformation(
+    '''create table recruitmentInformation(
         patterns text,
         responses text,
         key text,
@@ -64,7 +74,7 @@ c.execute(
 )
 # tag: fresherInternship
 c.execute(
-    '''create table companyInformation(
+    '''create table fresherInternship(
         patterns text,
         responses text,
         key text,
@@ -73,7 +83,7 @@ c.execute(
 )
 # tag: fresherInformation
 c.execute(
-    '''create table companyInformation(
+    '''create table fresherInformation(
         patterns text,
         responses text,
         key text,
@@ -82,7 +92,7 @@ c.execute(
 )
 # tag: noSendCV
 c.execute(
-    '''create table companyInformation(
+    '''create table noSendCV(
         patterns text,
         responses text,
         key text,
@@ -91,7 +101,7 @@ c.execute(
 )
 # tag: sendCV
 c.execute(
-    '''create table companyInformation(
+    '''create table sendCV(
         patterns text,
         responses text,
         key text,
@@ -100,7 +110,7 @@ c.execute(
 )
 # tag: employees
 c.execute(
-    '''create table companyInformation(
+    '''create table employees(
         patterns text,
         responses text,
         key text,
@@ -109,7 +119,7 @@ c.execute(
 )
 # tag: endConversation
 c.execute(
-    '''create table companyInformation(
+    '''create table endConversation(
         patterns text,
         responses text,
         key text,
@@ -123,6 +133,10 @@ for intent in intents['intents']:
         for pattern in intent['patterns']:
             c.execute(
                 "insert into greeting(patterns) values(:patterns)", {'patterns': pattern}
+            )
+        for response in intent['responses']:
+            c.execute(
+                "insert into greeting(responses) values(:responses)", {'responses': response}
             )
         break
 
