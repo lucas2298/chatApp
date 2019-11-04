@@ -2,7 +2,7 @@ import sqlite3
 from employees import Employees
 
 # conn = sqlite3.connect('employees.db')
-conn = sqlite3.connect('./database/employees.db')
+conn = sqlite3.connect('./TrainingData/database/chatbot.db')
 
 c = conn.cursor()
 
@@ -33,8 +33,10 @@ for i in emps:
         "insert into employees values(?, ?, ?)", (emp.first, emp.last, emp.pay)
     )
 
+hihi = "tag"
+
 c.execute(
-    "select * from employees"
+    "select * from " + hihi
 )
 
 print(c.fetchall())

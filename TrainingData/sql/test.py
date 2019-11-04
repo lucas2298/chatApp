@@ -2,64 +2,31 @@ import sqlite3
 from employees import Employees
 
 import json
-with open('intents.json', encoding='utf-8') as json_data:
+with open('./TrainingData/sql/intents.json', encoding='utf-8') as json_data:
     intents = json.load(json_data)
 
-conn = sqlite3.connect('./database/chatbot.db')
+conn = sqlite3.connect('./TrainingData/database/chatbot.db')
 
-c = conn.cursor()
+table = conn.cursor()
 
-c.execute("""drop table tag""")
-c.execute("""drop table greeting""")
-
-c.execute(
-    """create table tag(
-        tag text primary key,
-        lock text
-    )"""
+table.execute(
+    'select tag from alltag'
 )
+alltag = table.fetchall()
+print(alltag)
 
-emps = {}
-
-for intent in intents['intents']:
-    c.execute(
-        "insert into tag values(?, ?)", (intent['tag'], intent['lock'])
+for i in alltag:
+    tag = i[0]
+    print(tag)
+    table.execute(
+        'select patterns from '+tag
     )
-
-# tag: greeting
-c.execute(
-    '''create table greeting(
-        patterns text,
-        responses text,
-        key text,
-        privateOnnly integer
-    )'''
-)
-# tag: companyInformation
-c.execute(
-    '''create table companyInformation(
-        patterns text,
-        responses text,
-        key text,
-        privateOnnly integer
-    )'''
-)
-# tag: advice
-# tag: recruitmentInformation
-# tag: fresherInternship
-# tag: fresherInformation
-# tag: noSendCV
-# tag: sendCV
-# tag: employees
-# tag: endConversation
-
-for intent in intents['intents']:
-    if (intent['tag'] == 'greeting'):
-        for pattern in intent['patterns']:
-            c.execute(
-                "insert into greeting(patterns) values(:patterns)", {'patterns': pattern}
-            )
-        break
+    temp = table.fetchall()
+    print(temp)
+    for tmp in temp:
+        print(tmp[0])
+    break
+    
 
 conn.commit()
 
