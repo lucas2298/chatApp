@@ -7,8 +7,8 @@ stemmer = LancasterStemmer()
 def clean_up_sentence(sentence):
 	#Tokenize sentence
 	sentence_words = nltk.word_tokenize(sentence)
-	#Stem each word
-	# sentence_words = [stemmer.stem(word.lower()) for word in sentence_words]
+	#lowercase each word
+	sentence_words = [word.lower() for word in sentence_words]
 	return sentence_words
 
 def bow(sentence, words):
