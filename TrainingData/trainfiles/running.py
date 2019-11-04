@@ -31,21 +31,21 @@ model.load('./TrainingData/trainfiles/model.tflearn')
 import inputProcessing
 import random
 
-# ERROR_THRESHOLD = 0.25
-# def classify(sentence):
-#     # generate probabilities from the model
-#     results = model.predict([inputProcessing.bow(sentence, words)])[0]
-#     # filter out predictions below a threshold
-#     results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD]
-#     # sort by strength of probability
-#     results.sort(key=lambda x: x[1], reverse=True)
-#     return_list = []
-#     for r in results:
-#         return_list.append((classes[r[0]], r[1]))
-#     # return tuple of intent and probability
-#     return return_list
+ERROR_THRESHOLD = 0.25
+def classify(sentence):
+    # generate probabilities from the model
+    results = model.predict([inputProcessing.bow(sentence, words)])[0]
+    # filter out predictions below a threshold
+    results = [[i,r] for i,r in enumerate(results) if r>ERROR_THRESHOLD]
+    # sort by strength of probability
+    results.sort(key=lambda x: x[1], reverse=True)
+    return_list = []
+    for r in results:
+        return_list.append((classes[r[0]], r[1]))
+    # return tuple of intent and probability
+    return return_list
 
-# lock = {}
+lock = {}
 
 # def response(sentence, userID, show_details=False):
 #     results = classify(sentence)
