@@ -47,57 +47,58 @@ def classify(sentence):
 
 lock = {}
 
-# def response(sentence, userID, show_details=False):
-#     results = classify(sentence)
-#     if not userID in lock:
-#         lock[userID] = 'close'
-#     # if we have a classification then find the matching intent tag
-#     if results:
-#         print(results)
-#         # loop as long as there are matches to process
-#         for lenRes in range(0, len(results)):
-#             for i in intents['intents']:
-#                 # find a tag matching the first result
-#                 print(lock[userID])
-#                 print(i['key'])
-#                 print("\n")
-#                 if i['tag'] == results[lenRes][0]:
-#                     # Kiem tra tinh trang lock
-#                     if lock[userID] == 'close':
-#                         if i['privateOnly'] == "no":
-#                             # Them lock cho user
-#                             lock[userID] = i['lock']
-#                             # Tra ket qua
-#                             data = []
-#                             data.append(random.choice(i['responses']))
-#                             for s in i['selectList']:
-#                                 data.append(s)
-#                             if i['question'] != "":
-#                                 data.append(i['question']+'+')
-#                             return data
-#                     else:
-#                         if lock[userID] in i['key']:
-#                             data = []
-#                             data.append(random.choice(i['responses']))
-#                             for s in i['selectList']:
-#                                 data.append(s)
-#                             if i['question'] != "":
-#                                 data.append(i['question']+'+')
-#                             lock[userID] = i['lock']                            
-#                             return data
-#                     break
-#             for i in intents['intents']:
-#                 # find a tag matching the first result
-#                 if i['tag'] == results[lenRes][0]:
-#                     if i['privateOnly'] == "no":
-#                         # Them lock cho user
-#                         lock[userID] = i['lock']
-#                         # Tra ket qua
-#                         data = []
-#                         data.append(random.choice(i['responses']))
-#                         for s in i['selectList']:
-#                             data.append(s)
-#                         if i['question'] != "":
-#                             data.append(i['question']+'+')
-#                         return data
-#                     break
+def response(sentence, userID, show_details=False):
+    results = classify(sentence)
+    if not userID in lock:
+        lock[userID] = 'close'
+    return results
+    # if we have a classification then find the matching intent tag
+    # if results:
+    #     print(results)
+    #     # loop as long as there are matches to process
+    #     for lenRes in range(0, len(results)):
+    #         for i in intents['intents']:
+    #             # find a tag matching the first result
+    #             print(lock[userID])
+    #             print(i['key'])
+    #             print("\n")
+    #             if i['tag'] == results[lenRes][0]:
+    #                 # Kiem tra tinh trang lock
+    #                 if lock[userID] == 'close':
+    #                     if i['privateOnly'] == "no":
+    #                         # Them lock cho user
+    #                         lock[userID] = i['lock']
+    #                         # Tra ket qua
+    #                         data = []
+    #                         data.append(random.choice(i['responses']))
+    #                         for s in i['selectList']:
+    #                             data.append(s)
+    #                         if i['question'] != "":
+    #                             data.append(i['question']+'+')
+    #                         return data
+    #                 else:
+    #                     if lock[userID] in i['key']:
+    #                         data = []
+    #                         data.append(random.choice(i['responses']))
+    #                         for s in i['selectList']:
+    #                             data.append(s)
+    #                         if i['question'] != "":
+    #                             data.append(i['question']+'+')
+    #                         lock[userID] = i['lock']                            
+    #                         return data
+    #                 break
+    #         for i in intents['intents']:
+    #             # find a tag matching the first result
+    #             if i['tag'] == results[lenRes][0]:
+    #                 if i['privateOnly'] == "no":
+    #                     # Them lock cho user
+    #                     lock[userID] = i['lock']
+    #                     # Tra ket qua
+    #                     data = []
+    #                     data.append(random.choice(i['responses']))
+    #                     for s in i['selectList']:
+    #                         data.append(s)
+    #                     if i['question'] != "":
+    #                         data.append(i['question']+'+')
+    #                     return data
+    #                 break
