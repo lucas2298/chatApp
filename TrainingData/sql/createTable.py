@@ -28,6 +28,7 @@ c.execute(
     """create table alltag(
         tag text primary key,
         lock text,
+        question text,
         private integer
     )"""
 )

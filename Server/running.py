@@ -47,12 +47,19 @@ def classify(sentence):
 
 lock = {}
 
+# Load database
+import sqlite3
+conn = sqlite3.connect('./Server/database/chatbot.db')
+table = conn.cursor()
+#
+
 def response(sentence, userID, show_details=False):
     results = classify(sentence)
     if not userID in lock:
         lock[userID] = 'close'
-    s = "ahihi"
-    return s
+    if results:
+        for result in results:
+            
     # if we have a classification then find the matching intent tag
     # if results:
     #     print(results)
@@ -103,3 +110,12 @@ def response(sentence, userID, show_details=False):
     #                         data.append(i['question']+'+')
     #                     return data
     #                 break
+
+
+while (1):
+    inp = input()
+    print(inp)
+    response(inp, 'user1', False)
+
+conn.commit()
+conn.close()
