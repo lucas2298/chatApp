@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 import json
-from pycode.running import response
+from running import response
 import base64
 
 app = Flask(__name__)
