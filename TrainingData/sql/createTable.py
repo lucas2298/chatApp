@@ -27,6 +27,7 @@ c.execute("""drop table endConversation""")
 c.execute(
     """create table alltag(
         tag text primary key,
+        description text,
         lock text,
         question text,
         private integer

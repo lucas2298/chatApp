@@ -1,6 +1,7 @@
 {"intents": [
     {
         "tag": "greeting",
+        "description": "Chào hỏi",
         "patterns": ["hi", "hello", "chao", "chao ban", "bot", "can giup do", "xin chao", "ho tro"],
         "responses": ["Mình có thể giúp gì cho bạn?"],            
         "question": "",
@@ -11,6 +12,7 @@
     }, 
     {
         "tag": "companyInformation",
+        "description": "Thông tin công ty",
         "patterns": ["thong tin cong ty", "thong tin", "thong tin co ban", "cong ty", "co ban"],
         "responses": ["Aureole Information Technology Inc.(AIT)-Công ty 100% vốn đầu tư cổ phần Mitani Sangyo. Phát triển phần mềm ứng dụng trên Web. <a style='color: black;' target='_blank' href='http://www.aureole.vn/ait/vietnamese/index.html'>Chi tiết xem thêm tại đây.</a>"],
         "question": "Bạn muốn được tư vấn tiếp không?",
@@ -21,6 +23,7 @@
     },
     {
         "tag": "advice",
+        "description": "Tư vấn về tuyển dụng hoặc khách hàng",
         "patterns": ["tu van", "co"],
         "responses": ["Bạn muốn tư vấn về phần nào?"],
         "question": "",
@@ -31,6 +34,7 @@
     },
     {
        "tag": "recruitmentInformation",
+       "description": "Thông tin tuyển dụng",
        "patterns": ["ung tuyen", "thong tin tuyen dung", "tuyen dung", "tro thanh nhan vien", "tro thanh"],
        "responses": ["Các vị trí công ty có tuyển dụng"],
        "question": "",
@@ -41,6 +45,7 @@
     },
     {
         "tag": "fresherInternship",
+        "description": "Muốn biết gì về chương trình fresher và internship",
         "patterns": ["fresher", "internship", "fresher/internship", "intern"],
         "responses": ["Bạn muốn biết gì về chương trình này?"],
         "question": "",
@@ -51,6 +56,7 @@
     },
     {
         "tag": "fresherInformation",
+        "description": "Thông tin về chương trình fresher và internship",
         "patterns": ["thong tin"],
         "responses": ["Chương trình fresher và internship được diễn ra hằng năm. Kết quả tuyển chọn dựa trên bài test và phỏng vấn."],
         "question": "Bạn có muốn nộp CV không?",
@@ -61,6 +67,7 @@
     },
     {
         "tag": "noSendCV",
+        "description": "Không gửi CV",
         "patterns": ["khong cam on"],
         "responses": ["Bạn có cần gì nữa không?"],
         "question": "",
@@ -71,6 +78,7 @@
     },
     {
         "tag": "sendCV",
+        "description": "Có gửi CV",
         "patterns": ["co", "nop cv nhu the nao"],
         "responses": ["Bạn hãy gửi CV về email: tuyendung@aureole-it.vn"],
         "question": "",
@@ -81,6 +89,7 @@
     },
     {
         "tag": "employees",
+        "description": "Liên quan đến nhân viên chính thức",
         "patterns": ["nhan vien chinh thuc", "chinh thuc"],
         "responses": ["Bạn hãy gửi CV về email: tuyendung@aureole-it.vn"],
         "question": "",
@@ -91,6 +100,7 @@
     },
     {
         "tag": "endConversation",
+        "description": "Kết thúc trò chuyện",
         "patterns": ["ket thuc", "tam biet", "khong", "khong cam on", "im di", "khong can", "im lang"],
         "responses": ["Good bye.", "Hẹn gặp lại.", "Cần giúp đỡ hãy gọi mình."],
         "question": "",
