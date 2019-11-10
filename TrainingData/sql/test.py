@@ -1,4 +1,5 @@
 import sqlite3
+import nltk
 from employees import Employees
 
 import json
@@ -9,24 +10,39 @@ conn = sqlite3.connect('./TrainingData/database/chatbot.db')
 
 table = conn.cursor()
 
+#Classification
+words = [] #All word in every sentence
+classes = []
+documents = []
+stop_words = ['?', '.', ',']
+
+table = conn.cursor()
+
 table.execute(
     'select tag from alltag'
 )
 alltag = table.fetchall()
-print(alltag)
 
 for i in alltag:
     tag = i[0]
-    print(tag)
     table.execute(
-        'select patterns from '+tag
+        "select patterns from traindata "
+        "where tag = :tag", {'tag': tag}
     )
-    temp = table.fetchall()
-    print(temp)
-    for tmp in temp:
-        print(tmp[0])
-    break
-    
+    patterns = table.fetchall()
+    for j in patterns:
+    	pattern = j[0]
+    	w = nltk.word_tokenize(pattern)
+    	words.extend(w)
+    	documents.append((w, tag))
+    classes.append(tag)
+
+#Stem and lower word, but we are using vietnamese language so we only lowercase them
+words = [w.lower() for w in words if w not in stop_words]
+#Remove duplicates words
+words = sorted(list(set(words)))
+#remove duplicates classes
+classes = sorted(list(set(classes)))
 
 conn.commit()
 

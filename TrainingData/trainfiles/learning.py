@@ -31,17 +31,18 @@ table.execute(
 alltag = table.fetchall()
 
 for i in alltag:
-	tag = i[0]
-	table.execute(
-		'select patterns from '+tag
-	)
-	patterns = table.fetchall()
-	for j in patterns:
-		pattern = j[0]
-		w = nltk.word_tokenize(pattern)
-		words.extend(w)
-		documents.append((w, tag))
-	classes.append(tag)
+    tag = i[0]
+    table.execute(
+        "select patterns from traindata "
+        "where tag = :tag", {'tag': tag}
+    )
+    patterns = table.fetchall()
+    for j in patterns:
+    	pattern = j[0]
+    	w = nltk.word_tokenize(pattern)
+    	words.extend(w)
+    	documents.append((w, tag))
+    classes.append(tag)
 
 #Stem and lower word, but we are using vietnamese language so we only lowercase them
 words = [w.lower() for w in words if w not in stop_words]

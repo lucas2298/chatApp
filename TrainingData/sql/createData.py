@@ -1,9 +1,12 @@
 import sqlite3
-from employees import Employees
 
 import json
 with open('./TrainingData/sql/intents.json', encoding='utf-8') as json_data:
     intents = json.load(json_data)
+
+from createTable import createTable
+
+createTable()
 
 conn = sqlite3.connect('./TrainingData/database/chatbot.db')
 
@@ -18,30 +21,22 @@ for intent in intents['intents']:
     )
 
 # Push data to every tag in alltag
-# for intent in intents['intents']:
-#     p = []
-#     r = []
-#     q = []
-#     s = []
-#     for pattern in intent['patterns']:
-#         p.append(pattern)
-#     for response in intent['responses']:
-#         r.append(response)
-#     for question in intent['question']:
-#         q.append(question)
-#     for select in intent['selectList']:
-#         s.append(select)
+for intent in intents['intents']:
+    p = []
+    r = []
+    for pattern in intent['patterns']:
+        p.append(pattern)
+    for response in intent['responses']:
+        r.append(response)
 
-#     lenMax = max(len(p), len(r), len(q), len)
-
-#     while len(p) < len(r):
-#         p.append("")
-#     while len(p) > len(r):
-#         r.append("")
-#     for i in range(0, len(p)):
-#         c.execute(
-#             "insert into "+intent['tag']+" values(:patterns, :responses)", {'patterns': p[i], 'responses': r[i]}
-#         )
+    while len(p) < len(r):
+        p.append("")
+    while len(p) > len(r):
+        r.append("")
+    for i in range(0, len(p)):
+        c.execute(
+            "insert into traindata values(:tag, :patterns, :responses)", {'tag': intent['tag'],'patterns': p[i], 'responses': r[i]}
+        )
     
 
 conn.commit()

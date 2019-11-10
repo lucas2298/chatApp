@@ -59,7 +59,8 @@ def response(sentence, userID, show_details=False):
         lock[userID] = 'close'
     if results:
         for result in results:
-            
+            print(result)
+        
     # if we have a classification then find the matching intent tag
     # if results:
     #     print(results)
@@ -110,9 +111,7 @@ def response(sentence, userID, show_details=False):
     #                         data.append(i['question']+'+')
     #                     return data
     #                 break
-
-
-while (1):
+while 1:
     inp = input()
     print(inp)
     response(inp, 'user1', False)
