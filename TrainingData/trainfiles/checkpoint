@@ -1,2 +1,2 @@
-model_checkpoint_path: "D:\\chatapp\\TrainingData\\trainfiles\\model.tflearn"
-all_model_checkpoint_paths: "D:\\chatapp\\TrainingData\\trainfiles\\model.tflearn"
+model_checkpoint_path: "E:\\chatapp\\TrainingData\\trainfiles\\model.tflearn"
+all_model_checkpoint_paths: "E:\\chatapp\\TrainingData\\trainfiles\\model.tflearn"
