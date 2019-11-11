@@ -11,8 +11,10 @@ def createTable():
 
     c = conn.cursor()
 
-    c.execute("""drop table alltag""")
-    c.execute("drop table traindata")
+    c.execute("drop table alltag")
+    c.execute("drop table patterns")
+    c.execute("drop table selectlist")
+    c.execute("drop table key")
     
     # Create table alltag
     c.execute(
@@ -21,16 +23,32 @@ def createTable():
             description text,
             lock text,
             question text,
-            private integer
+            private integer,
+            response text
         )"""
     )
 
-    # Create table has all pattern and response
+    # Create table has all pattern
     c.execute(
-        """create table traindata(
+        """create table patterns(
             tag text,
             patterns text,
-            responses text,
+            foreign key (tag) references alltag(tag)
+        )"""
+    )
+    # Create table has all select list
+    c.execute(
+        """create table selectlist(
+            tag text,
+            selects text,
+            foreign key (tag) references alltag(tag)
+        )"""
+    )
+    # Create table has all key
+    c.execute(
+        """create table key(
+            tag text,
+            key text not null,
             foreign key (tag) references alltag(tag)
         )"""
     )
@@ -38,4 +56,4 @@ def createTable():
     conn.commit()
 
     conn.close()
-
+createTable()

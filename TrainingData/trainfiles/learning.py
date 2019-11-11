@@ -15,7 +15,7 @@ stemmer = LancasterStemmer()
 
 #Loading data training
 
-conn = sqlite3.connect('./TrainingData/database/chatbot.db')
+conn = sqlite3.connect('./Server/database/chatbot.db')
 
 #Classification
 words = [] #All word in every sentence
@@ -26,23 +26,17 @@ stop_words = ['?', '.', ',']
 table = conn.cursor()
 
 table.execute(
-    'select tag from alltag'
+    'select * from patterns'
 )
-alltag = table.fetchall()
+data = table.fetchall()
 
-for i in alltag:
-    tag = i[0]
-    table.execute(
-        "select patterns from traindata "
-        "where tag = :tag", {'tag': tag}
-    )
-    patterns = table.fetchall()
-    for j in patterns:
-    	pattern = j[0]
-    	w = nltk.word_tokenize(pattern)
-    	words.extend(w)
-    	documents.append((w, tag))
-    classes.append(tag)
+for i in data:
+	tag = i[0]
+	pattern = i[1]
+	w = nltk.word_tokenize(pattern)
+	words.extend(w)
+	documents.append((w, tag))
+	classes.append(tag)
 
 #Stem and lower word, but we are using vietnamese language so we only lowercase them
 words = [w.lower() for w in words if w not in stop_words]
@@ -74,7 +68,7 @@ for doc in documents:
 	training.append([bag, output_row])
 
 #Shuffle our features and turn into np.array
-random.shuffle(training)
+# random.shuffle(training)
 training = np.array(training)
 
 #Create train and test lists
@@ -91,14 +85,14 @@ net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
 net = tflearn.regression(net, optimizer='adam', loss='categorical_crossentropy')
 
 # Define model and setup tensorboard
-model = tflearn.DNN(net, tensorboard_dir='./TrainingData/trainfiles/tflearn_logs')
+model = tflearn.DNN(net, tensorboard_dir='./Server/traindatas/tflearn_logs')
 # Start training (apply gradient descent algorithm)
 model.fit(train_x, train_y, n_epoch=1000, batch_size=8, show_metric=True)
-model.save('./TrainingData/trainfiles/model.tflearn')
+model.save('./Server/traindatas/model.tflearn')
 
 # save all of our data structures
 import pickle
-pickle.dump( {'words':words, 'classes':classes, 'train_x':train_x, 'train_y':train_y}, open( "./TrainingData/trainfiles/training_data", "wb" ) )
+pickle.dump( {'words':words, 'classes':classes, 'train_x':train_x, 'train_y':train_y}, open( "./Server/traindatas/training_data", "wb" ) )
 
 conn.commit()
 

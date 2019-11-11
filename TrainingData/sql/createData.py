@@ -17,27 +17,25 @@ c = conn.cursor()
 # Push data to alltag
 for intent in intents['intents']:
     c.execute(
-        "insert into alltag values(:tag, :description, :lock, :question, :private)", {'tag': intent['tag'], 'description': intent['description'], 'lock': intent['lock'], 'question': intent['question'], 'private': intent['privateOnly']}
+        "insert into alltag values(:tag, :description, :lock, :question, :private, :response)", {'tag': intent['tag'], 'description': intent['description'], 'lock': intent['lock'], 'question': intent['question'], 'private': intent['privateOnly'], 'response': intent['responses']}
     )
 
 # Push data to every tag in alltag
 for intent in intents['intents']:
-    p = []
-    r = []
     for pattern in intent['patterns']:
-        p.append(pattern)
-    for response in intent['responses']:
-        r.append(response)
-
-    while len(p) < len(r):
-        p.append("")
-    while len(p) > len(r):
-        r.append("")
-    for i in range(0, len(p)):
         c.execute(
-            "insert into traindata values(:tag, :patterns, :responses)", {'tag': intent['tag'],'patterns': p[i], 'responses': r[i]}
+            "insert into patterns values(:tag, :patterns)", {'tag': intent['tag'], 'patterns': pattern}
         )
-    
+        
+    for s in intent['selectList']:
+        c.execute(
+            "insert into selectlist values(:tag, :select)", {'tag': intent['tag'], 'select': s}
+        )
+    for key in intent['key']:
+        if key != "":
+            c.execute(
+                "insert into key values(:tag, :key)", {'tag': intent['tag'], 'key': key}
+            )
 
 conn.commit()
 

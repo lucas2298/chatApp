@@ -2,7 +2,7 @@
 
 from flask import Flask, request
 import json
-from running import response
+import running
 import base64
 
 app = Flask(__name__)
@@ -24,7 +24,7 @@ def postdata():
             temp = ""
     userId = temp
 
-    messRes = response(messRecive, userId)
+    messRes = running.responses(messRecive, userId)
     messSum = ""
     for mess in messRes:
         messSum = messSum + '\n' + mess
@@ -32,7 +32,6 @@ def postdata():
 
     encodedBytes = base64.b64encode(messSum.encode("utf-8"))
     encodedStr = str(encodedBytes, "utf-8")
-
     return encodedStr
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 
 #Retore all of our data structures
 import pickle
-data = pickle.load(open("./TrainingData/trainfiles/training_data", "rb"))
+data = pickle.load(open("./Server/traindatas/training_data", "rb"))
 words = data['words']
 classes = data['classes']
 train_x = data['train_x']
@@ -24,9 +24,9 @@ net = tflearn.fully_connected(net, len(train_y[0]), activation='softmax')
 net = tflearn.regression(net, optimizer='adam', loss='categorical_crossentropy')
 
 # Define model and setup tensorboard
-model = tflearn.DNN(net, tensorboard_dir='./TrainingData/trainfiles/tflearn_logs')
+model = tflearn.DNN(net, tensorboard_dir='./Server/traindatas/tflearn_logs')
 
-model.load('./TrainingData/trainfiles/model.tflearn')
+model.load('./Server/traindatas/model.tflearn')
 
 import inputProcessing
 import random
@@ -45,76 +45,99 @@ def classify(sentence):
     # return tuple of intent and probability
     return return_list
 
-lock = {}
+locks = {}
 
-# Load database
+# Database
 import sqlite3
-conn = sqlite3.connect('./Server/database/chatbot.db')
+conn = sqlite3.connect('./Server/database/chatbot.db', check_same_thread=False)
 table = conn.cursor()
-#
+table.execute(
+    "select * from alltag"
+)
+temp = table.fetchall()
+# All tag
+tag = []
+lock = []
+question = []
+privateOnly = []
+response = []
+for i in temp:
+    tag.append(i[0])
+    lock.append(i[2])
+    question.append(i[3])
+    privateOnly.append(i[4])
+    response.append(i[5])
 
-def response(sentence, userID, show_details=False):
+def responses(sentence, userID, show_details=False):
     results = classify(sentence)
-    if not userID in lock:
-        lock[userID] = 'close'
-    if results:
-        for result in results:
-            print(result)
-        
+    if not userID in locks:
+        locks[userID] = ''
     # if we have a classification then find the matching intent tag
-    # if results:
-    #     print(results)
-    #     # loop as long as there are matches to process
-    #     for lenRes in range(0, len(results)):
-    #         for i in intents['intents']:
-    #             # find a tag matching the first result
-    #             print(lock[userID])
-    #             print(i['key'])
-    #             print("\n")
-    #             if i['tag'] == results[lenRes][0]:
-    #                 # Kiem tra tinh trang lock
-    #                 if lock[userID] == 'close':
-    #                     if i['privateOnly'] == "no":
-    #                         # Them lock cho user
-    #                         lock[userID] = i['lock']
-    #                         # Tra ket qua
-    #                         data = []
-    #                         data.append(random.choice(i['responses']))
-    #                         for s in i['selectList']:
-    #                             data.append(s)
-    #                         if i['question'] != "":
-    #                             data.append(i['question']+'+')
-    #                         return data
-    #                 else:
-    #                     if lock[userID] in i['key']:
-    #                         data = []
-    #                         data.append(random.choice(i['responses']))
-    #                         for s in i['selectList']:
-    #                             data.append(s)
-    #                         if i['question'] != "":
-    #                             data.append(i['question']+'+')
-    #                         lock[userID] = i['lock']                            
-    #                         return data
-    #                 break
-    #         for i in intents['intents']:
-    #             # find a tag matching the first result
-    #             if i['tag'] == results[lenRes][0]:
-    #                 if i['privateOnly'] == "no":
-    #                     # Them lock cho user
-    #                     lock[userID] = i['lock']
-    #                     # Tra ket qua
-    #                     data = []
-    #                     data.append(random.choice(i['responses']))
-    #                     for s in i['selectList']:
-    #                         data.append(s)
-    #                     if i['question'] != "":
-    #                         data.append(i['question']+'+')
-    #                     return data
-    #                 break
-while 1:
-    inp = input()
-    print(inp)
-    response(inp, 'user1', False)
+    if results:
+        # loop as long as there are matches to process
+        for lenRes in range(0, len(results)):
+            for i in range(0, len(tag)):
+                # find a tag matching the first result
+                if tag[i] == results[lenRes][0]:
+                    # Kiem tra tinh trang lock
+                    if locks[userID] == '':
+                        if privateOnly[i] == "no":
+                            # Them lock cho user
+                            locks[userID] = lock[i]
+                            # Tra ket qua
+                            data = []
+                            data.append(response[i])
+                            table.execute(
+                                "select selects from selectlist "
+                                "where tag = :tag", {'tag': tag[i]}
+                            )
+                            selectList = table.fetchall()
+                            for s in selectList:
+                                data.append(s[0])
+                            if question[i] != "":
+                                data.append(question[i]+'+')
+                            return data
+                    else:
+                        table.execute(
+                            "select key from key "
+                            "where tag = :tag", {'tag': tag[i]}
+                        )
+                        temp = table.fetchall()
+                        for key in temp:
+                            if locks[userID] == key[0]:
+                                data = []
+                                data.append(response[i])
+                                table.execute(
+                                    "select selects from selectlist "
+                                    "where tag = :tag", {'tag': tag[i]}
+                                )
+                                selectList = table.fetchall()
+                                for s in selectList:
+                                    data.append(s[0])
+                                if question[i] != "":
+                                    data.append(question[i]+'+')
+                                return data
+                    break
+            for i in range(0, len(tag)):
+                # find a tag matching the first result
+                if tag[i] == results[lenRes][0]:
+                    if privateOnly[i] == "no":
+                        # Them lock cho user
+                        locks[userID] = lock[i]
+                        # Tra ket qua
+                        data = []
+                        data.append(response[i])
+                        table.execute(
+                            "select selects from selectlist "
+                            "where tag = :tag", {'tag': tag[i]}
+                        )
+                        selectList = table.fetchall()
+                        for s in selectList:
+                            data.append(s[0])
+                        if question[i] != "":
+                            data.append(question[i]+'+')
+                        return data
+                    break
 
 conn.commit()
-conn.close()
+# conn.close()
