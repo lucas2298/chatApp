@@ -1,0 +1,31 @@
+{
+    "name": "chat",
+    "version": "1.0.0",
+    "description": "https://www.youtube.com/watch?v=KNqVpESuyQo\r https://www.youtube.com/watch?v=UzNqdD8EiAo&list=PL8ClR1xrtR4sCTLCFFFc3PKLHr6hPnXea&index=5\r https://cdnjs.com/libraries/socket.io",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lucas2298/chat.git"
+    },
+    "author": "thanght",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/lucas2298/chat/issues"
+    },
+    "homepage": "https://github.com/lucas2298/chat#readme",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "child_process": "^1.0.2",
+        "express": "^4.17.1",
+        "request": "^2.88.0",
+        "request-promise": "^4.2.4",
+        "socket.io": "^2.2.0",
+        "utf8": "^3.0.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.19.3"
+    }
+}
