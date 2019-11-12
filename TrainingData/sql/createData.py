@@ -1,4 +1,6 @@
-import sqlite3
+import pymysql
+
+db = pymysql.connect("localhost", "root", "", "chatbot")
 
 import json
 with open('./TrainingData/sql/intents.json', encoding='utf-8') as json_data:
@@ -8,35 +10,29 @@ from createTable import createTable
 
 createTable()
 
-conn = sqlite3.connect('./TrainingData/database/chatbot.db')
-
-c = conn.cursor()
+table = db.cursor()
 
 # Push data to table
 
 # Push data to alltag
 for intent in intents['intents']:
-    c.execute(
-        "insert into alltag values(:tag, :description, :lock, :question, :private, :response)", {'tag': intent['tag'], 'description': intent['description'], 'lock': intent['lock'], 'question': intent['question'], 'private': intent['privateOnly'], 'response': intent['responses']}
-    )
+    sql = "insert into alltag values(%s, %s, %s, %s, %s, %s)"
+    table.execute(sql, (intent['tag'], intent['description'], intent['lock'], intent['question'], intent['privateOnly'], intent['responses']))
 
 # Push data to every tag in alltag
 for intent in intents['intents']:
+    sql = "insert into patterns(tag, patterns) values(%s, %s)"
     for pattern in intent['patterns']:
-        c.execute(
-            "insert into patterns values(:tag, :patterns)", {'tag': intent['tag'], 'patterns': pattern}
-        )
+        table.execute(sql, (intent['tag'], pattern))
         
+    sql = "insert into selectlist(tag, selects) values(%s, %s)"
     for s in intent['selectList']:
-        c.execute(
-            "insert into selectlist values(:tag, :select)", {'tag': intent['tag'], 'select': s}
-        )
+        table.execute(sql, (intent['tag'], s))
+
+    sql = "insert into keyunlock(tag, keyUnlock) values(%s, %s)"
     for key in intent['key']:
         if key != "":
-            c.execute(
-                "insert into key values(:tag, :key)", {'tag': intent['tag'], 'key': key}
-            )
+            table.execute(sql, (intent['tag'], key))
 
-conn.commit()
-
-conn.close()
+db.commit()
+db.close()
