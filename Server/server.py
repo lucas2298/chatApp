@@ -23,16 +23,11 @@ def postdata():
             messRecive = temp
             temp = ""
     userId = temp
-
-    messRes = running.responses(messRecive, userId)
-    messSum = ""
-    for mess in messRes:
-        messSum = messSum + '\n' + mess
-    messSum += '\n'
-
-    encodedBytes = base64.b64encode(messSum.encode("utf-8"))
-    encodedStr = str(encodedBytes, "utf-8")
-    return encodedStr
+    tags = running.responses(messRecive, userId)
+    data = ""
+    for tag in tags:
+        data = data +"+"+tag
+    return data
 
 if __name__ == "__main__":
     app.run(port=4001)

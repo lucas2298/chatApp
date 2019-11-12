@@ -8,21 +8,23 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/lucas2298/chat.git"
+        "url": "git+https://github.com/lucas2298/chatapp"
     },
     "author": "thanght",
     "license": "ISC",
     "bugs": {
-        "url": "https://github.com/lucas2298/chat/issues"
+        "url": "https://github.com/lucas2298/chatapp/issues"
     },
-    "homepage": "https://github.com/lucas2298/chat#readme",
+    "homepage": "https://github.com/lucas2298/chatapp#readme",
     "dependencies": {
         "body-parser": "^1.19.0",
         "child_process": "^1.0.2",
         "express": "^4.17.1",
+        "mysql": "^2.17.1",
         "request": "^2.88.0",
         "request-promise": "^4.2.4",
         "socket.io": "^2.2.0",
+        "sqlite3": "^4.1.0",
         "utf8": "^3.0.0"
     },
     "devDependencies": {

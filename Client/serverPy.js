@@ -2,7 +2,7 @@ let express = require('express');
 let socket = require('socket.io');
 let bodyParser = require('body-parser');
 let request = require('request-promise');
-let spawn = require('child_process').spawn;
+const sqlite3 = require('sqlite3').verbose();
 
 // App setup
 let app = express();
@@ -52,60 +52,35 @@ function xoa_dau(str) {
     return str;
 }
 
-function decodeBase64(mess) {
-    let buff = new Buffer(mess, 'base64');
-    let messDecode = buff.toString('utf8');
+function stringToTags(mess) {
+    tags = [];
+    s = ""
+    for (i = 1; i < mess.length; i++) 
+    if (mess[i] != '+') {
+        s += mess[i]
+    }
+    else {
+        tags.push(s);
+        s = ''
+    }
+    tags.push(s)
     return messDecode;
 }
+
+lock = {}
 
 io.on('connection', function(socket) {
     socket.on('chat', function(data){
         io.to(socket.id).emit('chat', data);
         // Xoa dau
         let mess = xoa_dau(data.message).toLowerCase();
+        // Connect to database
+        let db = new sqlite3.Database('./Server/database/chatbot.db', sqlite3.OPEN_READWRITE);
         // Get answer from python
         getResponse(mess, socket.id)
-        .then (function (messRes) {            
-            let messDecode = decodeBase64(messRes);
+        .then (function (messRes) {
+            let tags = stringToTags(messRes);
             let messAnsw = "";
-            let user = false;
-            let selectID = 0;
-            for (let i = 1; i < messDecode.length; i++) {
-                if (messDecode[i] != "\n" && messDecode[i] != "+") messAnsw += messDecode[i];
-                else 
-                if (messDecode[i] == "+") {
-                    io.to(socket.id).emit('chat', {
-                        message: messAnsw,
-                        isUser: false,
-                        isSelectList: false,
-                        id: 0
-                    });
-                    break;
-                }
-                else {
-                    if (!user) {
-                        user = true;
-                        io.to(socket.id).emit('chat', {
-                            message: messAnsw,
-                            isUser: false,
-                            isSelectList: false,
-                            id: 0
-                        });
-                    }
-                    else {
-                        selectID++;
-                        io.to(socket.id).emit('chat', {
-                            message: messAnsw,
-                            isUser: true,
-                            isSelectList: true,
-                            id: selectID
-                        });
-                    }
-                    messAnsw = ""
-                }
-            }
-
         });
-
     });
 });
