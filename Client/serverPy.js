@@ -2,7 +2,6 @@ let express = require('express');
 let socket = require('socket.io');
 let bodyParser = require('body-parser');
 let request = require('request-promise');
-const sqlite3 = require('sqlite3').verbose();
 
 // App setup
 let app = express();
@@ -64,23 +63,151 @@ function stringToTags(mess) {
         s = ''
     }
     tags.push(s)
-    return messDecode;
+    return tags;
 }
+
+// Connect to database
+let mysql = require('mysql');
+let connection = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "chatbot"
+});
 
 lock = {}
 
 io.on('connection', function(socket) {
+    let userID = socket.id;
     socket.on('chat', function(data){
+        if (!(userID in lock)) {
+            lock[userID] = ''
+        }
         io.to(socket.id).emit('chat', data);
         // Xoa dau
-        let mess = xoa_dau(data.message).toLowerCase();
-        // Connect to database
-        let db = new sqlite3.Database('./Server/database/chatbot.db', sqlite3.OPEN_READWRITE);
-        // Get answer from python
+        let mess = xoa_dau(data.message).toLowerCase();        
+        // Get tags from python
         getResponse(mess, socket.id)
         .then (function (messRes) {
+            // Python return a string has type +tag1+tag2+tagn
+            // We have to change it to an array [tag1, tag2, tagn]
             let tags = stringToTags(messRes);
-            let messAnsw = "";
+            // If this user is new
+            if (lock[userID] == '') {
+                // Get all tag from database
+                let sql = 'select * from alltag';
+                connection.query(sql, function(err, rows){
+                    if (err) {
+                        console.log(err)
+                        return;
+                    }
+                    // With each tag, if tag we recived from python has private = no
+                    // send response to client
+                    rows.forEach(function(row){
+                        for (i = 0; i < tags.length; i++) {
+                            if (tags[i] == row.tag) {
+                                if (row.private == 'no') {
+                                    lock[userID] = row.locks;
+                                    question = row.question;
+                                    io.to(userID).emit('chat', {
+                                        message: row.response,
+                                        isUser: false,
+                                        isSelectList: false,
+                                        id: 0
+                                    });                                    
+                                    if (question != '') {
+                                        io.to(userID).emit('chat', {
+                                            message: question,
+                                            isUser: false,
+                                            isSelectList: false,
+                                            id: 0
+                                        });
+                                    }
+                                    sql = "select selects from selectlist where tag = ?"
+                                    arg = [tags[i]]
+                                    connection.query(sql, arg, function(err, rowSelects){
+                                        if (err) {
+                                            console.log(err)
+                                            return;
+                                        }
+                                        rowSelects.forEach(function(rowSelect){
+                                            io.to(userID).emit('chat', {
+                                                message: rowSelect.selects,
+                                                isUser: false,
+                                                isSelectList: true,
+                                                id: 0
+                                            });
+                                        });
+                                    });
+                                }
+                                return;
+                            }
+                        }                        
+                    });
+                });
+            }
+            else {
+                let sql = 'select * from keyunlock';
+                connection.query(sql, function(err, rows){
+                    if (err) {
+                        console.log(err)
+                        return;
+                    }
+                    // With each tag, if tag we recived from python has lock = key
+                    // send response to client
+                    rows.forEach(function(row) {
+                        for (i = 0; i < tags.length; i++) 
+                            if (tags[i] == row.tag && lock[userID] == row.keyUnlock) {
+                                let messRes = '';                                
+                                sql = 'select * from alltag where tag = ?'
+                                arg = [tags[i]]
+                                connection.query(sql, arg, function(err, rowtags){
+                                    rowtags.forEach(function(rowtag){
+                                        lock[userID] = rowtag.locks;
+                                        messRes = rowtag.response;
+                                        question = rowtag.question;
+                                    });
+                                });
+                                io.to(userID).emit('chat', {
+                                    message: messRes,
+                                    isUser: false,
+                                    isSelectList: false,
+                                    id: 0
+                                });
+                                console.log(tags[i])
+                                console.log(lock[userID])
+                                console.log(question)
+                                console.log(messRes)
+                                console.log("ahihi\n")
+                                if (question != '') {
+                                    io.to(userID).emit('chat', {
+                                        message: question,
+                                        isUser: false,
+                                        isSelectList: false,
+                                        id: 0
+                                    });
+                                }
+                                // sql = "select selects from selectlist where tag = ?"
+                                // arg = [tags[i]]
+                                // connection.query(sql, arg, function(err, rowSelects){
+                                //     if (err) {
+                                //         console.log(err)
+                                //         return;
+                                //     }
+                                //     rowSelects.forEach(function(rowSelect){
+                                //         io.to(userID).emit('chat', {
+                                //             message: rowSelect.selects,
+                                //             isUser: false,
+                                //             isSelectList: true,
+                                //             id: 0
+                                //         });
+                                //     });
+                                // });
+                                // return;
+                            }
+                    });
+                });
+            }
         });
     });
 });

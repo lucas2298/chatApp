@@ -14,9 +14,10 @@ connection.connect(function(err){
     console.log("OK")
 });
 
-$query = "select * from alltag";
+let sql = "select tag, locks from alltag where tag = ?";
+let tag = 'greeting'
 
-connection.query($query, function(err, rows){
+connection.query(sql, [tag], function(err, rows){
     if (err) {
         console.log(err)
         return;
