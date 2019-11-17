@@ -11,7 +11,7 @@ let server = app.listen(process.env.PORT || 4000, function() {
 });
 
 // Static files
-app.use(express.static('public'));
+app.use(express.static('./Client/public'));
 
 // async function
 // Get answer from server
@@ -157,53 +157,52 @@ io.on('connection', function(socket) {
                     // send response to client
                     rows.forEach(function(row) {
                         for (i = 0; i < tags.length; i++) 
-                            if (tags[i] == row.tag && lock[userID] == row.keyUnlock) {
-                                let messRes = '';                                
+                            if (tags[i] == row.tag && lock[userID] == row.keyUnlock) {                              
                                 sql = 'select * from alltag where tag = ?'
-                                arg = [tags[i]]
+                                arg = [tags[i]]        
+                                let lockNext = '';
+                                let messRes = '';
+                                let question = '';
+                                // Query return response' tag, lock' tag and question' tag
                                 connection.query(sql, arg, function(err, rowtags){
                                     rowtags.forEach(function(rowtag){
-                                        lock[userID] = rowtag.locks;
+                                        lockNext = rowtag.locks;
                                         messRes = rowtag.response;
-                                        question = rowtag.question;
+                                        question = rowtag.question;                                
+                                        lock[userID] = lockNext;                       
+                                        io.to(userID).emit('chat', {
+                                            message: messRes,
+                                            isUser: false,
+                                            isSelectList: false,
+                                            id: 0
+                                        });                                
+                                        if (question != '') {
+                                            io.to(userID).emit('chat', {
+                                                message: question,
+                                                isUser: false,
+                                                isSelectList: false,
+                                                id: 0
+                                            });
+                                        }
+                                        // Query return a list
+                                        sql = "select selects from selectlist where tag = ?"                                        
+                                        connection.query(sql, arg, function(err, rowSelects){
+                                            if (err) {
+                                                console.log(err)
+                                                return;
+                                            }
+                                            rowSelects.forEach(function(rowSelect){
+                                                io.to(userID).emit('chat', {                                                    
+                                                    message: rowSelect.selects,
+                                                    isUser: false,
+                                                    isSelectList: true,
+                                                    id: 0
+                                                });
+                                            });
+                                        });
+                                        return;
                                     });
-                                });
-                                io.to(userID).emit('chat', {
-                                    message: messRes,
-                                    isUser: false,
-                                    isSelectList: false,
-                                    id: 0
-                                });
-                                console.log(tags[i])
-                                console.log(lock[userID])
-                                console.log(question)
-                                console.log(messRes)
-                                console.log("ahihi\n")
-                                if (question != '') {
-                                    io.to(userID).emit('chat', {
-                                        message: question,
-                                        isUser: false,
-                                        isSelectList: false,
-                                        id: 0
-                                    });
-                                }
-                                // sql = "select selects from selectlist where tag = ?"
-                                // arg = [tags[i]]
-                                // connection.query(sql, arg, function(err, rowSelects){
-                                //     if (err) {
-                                //         console.log(err)
-                                //         return;
-                                //     }
-                                //     rowSelects.forEach(function(rowSelect){
-                                //         io.to(userID).emit('chat', {
-                                //             message: rowSelect.selects,
-                                //             isUser: false,
-                                //             isSelectList: true,
-                                //             id: 0
-                                //         });
-                                //     });
-                                // });
-                                // return;
+                                });                                
                             }
                     });
                 });
