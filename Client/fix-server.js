@@ -58,6 +58,14 @@ async function getResponseHasLock(tags, userID, LOCK) {
                 sql = 'select * from alltag where tag = ?';
                 arg = [tag];
                 rowTag = await pool.query(sql, arg);
+                lock[userID] = rowTag[0]['locks'];
+                io.to(userID).emit('chat', {
+                    message: rowTag[0]['response'],
+                    isUser: false,
+                    isSelectList: false,
+                    id: 0
+                });
+                getSelectList(tag, userID);
             }
         }
     }
