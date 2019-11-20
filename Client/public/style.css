@@ -8,8 +8,8 @@ h2 {
     color: #575ed8;
 }
 
-#mario-chat {
-    max-width: 600px;
+.Aureole-it {
+    max-width: 400px;
     margin: 30px auto;
     border: 1px solid #ddd;
     box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
@@ -17,8 +17,8 @@ h2 {
 }
 
 #chat_log {
-    height: 400px;
     background: #f9f9f9;
+    height: calc(100vh - 400px);
     padding: 10px;
     overflow-y: scroll;
     font-size: 16px;

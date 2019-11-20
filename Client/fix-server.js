@@ -18,7 +18,7 @@ app.use(express.static('./Client/public'));
 let io = socket(server);
 
 // Connect to database
-const pool = require('./test');
+const pool = require('./query');
 
 lock = {}
 
@@ -66,9 +66,11 @@ async function getResponseHasLock(tags, userID, LOCK) {
                     id: 0
                 });
                 getSelectList(tag, userID);
+                return;
             }
         }
     }
+    getResponseHasNoLock(tags, userID);
 }
 // Get select list
 async function getSelectList(tag, userID) {
@@ -109,7 +111,10 @@ io.on('connection', function(socket) {
             else {
                 // Get response
                 getResponseHasLock(tags, userID, lock[userID]);
-            }
+            }            
+        });
+        socket.on('disconnect', function () {
+            delete lock[userID];
         });
     });
 });

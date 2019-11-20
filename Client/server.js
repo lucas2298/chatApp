@@ -2,6 +2,7 @@ let express = require('express');
 let socket = require('socket.io');
 let bodyParser = require('body-parser');
 let request = require('request-promise');
+let func = require('./function');
 
 // App setup
 let app = express();
@@ -13,69 +14,81 @@ let server = app.listen(process.env.PORT || 4000, function() {
 // Static files
 app.use(express.static('./Client/public'));
 
-// async function
-// Get answer from server
-async function getResponse(req, id) {
-    let options = {
-        method: 'POST',
-        // local
-        uri: 'http://localhost:4001/postdata',
-        // live
-        // uri: 
-        body: req+'+'+id,
-        json: true
-    };
-    let returndata = await request(options)
-    return returndata;
-}
-
 // Socket setup
 let io = socket(server);
 
-// Xoa dau tieng viet
-function xoa_dau(str) {
-    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
-    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
-    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
-    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
-    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
-    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
-    str = str.replace(/đ/g, "d");
-    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
-    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
-    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
-    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
-    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
-    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
-    str = str.replace(/Đ/g, "D");
-    return str;
-}
-
-function stringToTags(mess) {
-    tags = [];
-    s = ""
-    for (i = 1; i < mess.length; i++) 
-    if (mess[i] != '+') {
-        s += mess[i]
-    }
-    else {
-        tags.push(s);
-        s = ''
-    }
-    tags.push(s)
-    return tags;
-}
-
 // Connect to database
-let mysql = require('mysql');
-let connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "chatbot"
-});
+const pool = require('./query');
 
 lock = {}
+
+// Get response with lock = ''
+async function getResponseHasNoLock (tags, userID) {
+    sql = 'select * from alltag';
+    arg = [];
+    rows = await pool.query(sql, arg);
+    for (i in rows) {
+        row = rows[i];
+        for (j in tags) {
+            tag = tags[j];
+            if (tag == row['tag']) {
+                lock[userID] = row['locks'];
+                io.to(userID).emit('chat', {
+                    message: row['response'],
+                    isUser: false,
+                    isSelectList: false,
+                    id: 0
+                });
+                getSelectList(tag, userID);
+                return;
+            }
+        }
+    }
+}
+// Get response with lock != ''
+async function getResponseHasLock(tags, userID, LOCK) {
+    sql = 'select * from keyunlock where keyunlock = ?';
+    arg = [LOCK];
+    rows = await pool.query(sql, arg);
+    for (i in rows) {
+        row = rows[i];
+        for (j in tags) {
+            tag = tags[j];
+            if (row['tag'] == tag && row['keyUnlock'] == LOCK)  {
+                sql = 'select * from alltag where tag = ?';
+                arg = [tag];
+                rowTag = await pool.query(sql, arg);
+                lock[userID] = rowTag[0]['locks'];
+                io.to(userID).emit('chat', {
+                    message: rowTag[0]['response'],
+                    isUser: false,
+                    isSelectList: false,
+                    id: 0
+                });
+                getSelectList(tag, userID);
+                return;
+            }
+        }
+    }
+    getResponseHasNoLock(tags, userID);
+}
+// Get select list
+async function getSelectList(tag, userID) {
+    sql = 'select * from selectlist where tag = ?';
+    arg = [tag];
+    rows = await pool.query(sql, arg);
+    for (i in rows) {
+        row = rows[i];
+        if (row['tag'] == tag) {
+            io.to(userID).emit('chat', {
+                message: row['selects'],
+                isUser: false,
+                isSelectList: true,
+                id: 0
+            });
+        }
+    }
+}
 
 io.on('connection', function(socket) {
     let userID = socket.id;
@@ -85,128 +98,23 @@ io.on('connection', function(socket) {
         }
         io.to(socket.id).emit('chat', data);
         // Xoa dau
-        let mess = xoa_dau(data.message).toLowerCase();        
+        let mess = func.xoa_dau(data.message).toLowerCase();        
         // Get tags from python
-        getResponse(mess, socket.id)
+        func.getAllTag(mess, socket.id)
         .then (function (messRes) {
-            // Python return a string has type +tag1+tag2+tagn
-            // We have to change it to an array [tag1, tag2, tagn]
-            let tags = stringToTags(messRes);
+            let tags = func.stringToTags(messRes);
             // If this user is new
             if (lock[userID] == '') {
-                // Get all tag from database
-                let sql = 'select * from alltag';
-                connection.query(sql, function(err, rows){
-                    if (err) {
-                        console.log(err)
-                        return;
-                    }
-                    // With each tag, if tag we recived from python has private = no
-                    // send response to client
-                    rows.forEach(function(row){
-                        for (i = 0; i < tags.length; i++) {
-                            if (tags[i] == row.tag) {
-                                if (row.private == 'no') {
-                                    lock[userID] = row.locks;
-                                    question = row.question;
-                                    io.to(userID).emit('chat', {
-                                        message: row.response,
-                                        isUser: false,
-                                        isSelectList: false,
-                                        id: 0
-                                    });                                    
-                                    if (question != '') {
-                                        io.to(userID).emit('chat', {
-                                            message: question,
-                                            isUser: false,
-                                            isSelectList: false,
-                                            id: 0
-                                        });
-                                    }
-                                    sql = "select selects from selectlist where tag = ?"
-                                    arg = [tags[i]]
-                                    connection.query(sql, arg, function(err, rowSelects){
-                                        if (err) {
-                                            console.log(err)
-                                            return;
-                                        }
-                                        rowSelects.forEach(function(rowSelect){
-                                            io.to(userID).emit('chat', {
-                                                message: rowSelect.selects,
-                                                isUser: false,
-                                                isSelectList: true,
-                                                id: 0
-                                            });
-                                        });
-                                    });
-                                }
-                                return;
-                            }
-                        }                        
-                    });
-                });
+                // Get response
+                getResponseHasNoLock(tags, userID);
             }
             else {
-                let sql = 'select * from keyunlock';
-                connection.query(sql, function(err, rows){
-                    if (err) {
-                        console.log(err)
-                        return;
-                    }
-                    // With each tag, if tag we recived from python has lock = key
-                    // send response to client
-                    rows.forEach(function(row) {
-                        for (i = 0; i < tags.length; i++) 
-                            if (tags[i] == row.tag && lock[userID] == row.keyUnlock) {                              
-                                sql = 'select * from alltag where tag = ?'
-                                arg = [tags[i]]        
-                                let lockNext = '';
-                                let messRes = '';
-                                let question = '';
-                                // Query return response' tag, lock' tag and question' tag
-                                connection.query(sql, arg, function(err, rowtags){
-                                    rowtags.forEach(function(rowtag){
-                                        lockNext = rowtag.locks;
-                                        messRes = rowtag.response;
-                                        question = rowtag.question;                                
-                                        lock[userID] = lockNext;                       
-                                        io.to(userID).emit('chat', {
-                                            message: messRes,
-                                            isUser: false,
-                                            isSelectList: false,
-                                            id: 0
-                                        });                                
-                                        if (question != '') {
-                                            io.to(userID).emit('chat', {
-                                                message: question,
-                                                isUser: false,
-                                                isSelectList: false,
-                                                id: 0
-                                            });
-                                        }
-                                        // Query return a list
-                                        sql = "select selects from selectlist where tag = ?"                                        
-                                        connection.query(sql, arg, function(err, rowSelects){
-                                            if (err) {
-                                                console.log(err)
-                                                return;
-                                            }
-                                            rowSelects.forEach(function(rowSelect){
-                                                io.to(userID).emit('chat', {                                                    
-                                                    message: rowSelect.selects,
-                                                    isUser: false,
-                                                    isSelectList: true,
-                                                    id: 0
-                                                });
-                                            });
-                                        });
-                                        return;
-                                    });
-                                });                                
-                            }
-                    });
-                });
-            }
+                // Get response
+                getResponseHasLock(tags, userID, lock[userID]);
+            }            
+        });
+        socket.on('disconnect', function () {
+            delete lock[userID];
         });
     });
 });
