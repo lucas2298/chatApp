@@ -39,6 +39,14 @@ async function getResponseHasNoLock (tags, userID) {
                     isSelectList: false,
                     id: 0
                 });
+                if (row['question'] != null) {
+                    io.to(userID).emit('chat', {
+                        message: row['question'],
+                        isUser: false,
+                        isSelectList: false,
+                        id: 0
+                    });
+                }
                 getSelectList(tag, userID);
                 return;
             }
@@ -65,6 +73,14 @@ async function getResponseHasLock(tags, userID, LOCK) {
                     isSelectList: false,
                     id: 0
                 });
+                if (row['question'] != null) {
+                    io.to(userID).emit('chat', {
+                        message: row['question'],
+                        isUser: false,
+                        isSelectList: false,
+                        id: 0
+                    });
+                }
                 getSelectList(tag, userID);
                 return;
             }
@@ -86,6 +102,14 @@ async function getSelectList(tag, userID) {
                 isSelectList: true,
                 id: 0
             });
+            if (row['question'] != null) {
+                io.to(userID).emit('chat', {
+                    message: row['question'],
+                    isUser: false,
+                    isSelectList: false,
+                    id: 0
+                });
+            }
         }
     }
 }

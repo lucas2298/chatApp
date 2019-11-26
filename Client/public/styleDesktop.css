@@ -125,7 +125,7 @@ label {
 }
 
 .chat_bubble_select_list {
-    width: 140px;
+    width: 100px;
     height: 45px;
     font-family: 'Roboto', sans-serif;
     font-size: 10px;
@@ -137,7 +137,7 @@ label {
     border: none;
     border-radius: 45px;
     transition: all 0.3s ease 0s;
-    margin: 8px;
+    margin: 7px;
     border: 1px solid black;
 }
 .chat_bubble_select_list:hover {
