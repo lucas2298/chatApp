@@ -46,11 +46,7 @@ socket.on('chat', function(data){
     if (data.isSelectList) {
         class_suffix = '_select_list';
         let html = '\
-            <div class="chat_select">\
-                <div>\
-                    <button class="chat_bubble'+class_suffix+'" id="btn'+class_suffix+data.id+'" value="'+message+'" onClick="answerSelect(this.value)">'+message+'</button>\
-                </div>\
-            </div>\
+               <button class="col chat_bubble'+class_suffix+'" id="btn'+class_suffix+data.id+'" value="'+message+'" onClick="answerSelect(this.value)">'+message+'</button>\
         ';
         $('#chat_select').append(html);
         chat_scrolldown();

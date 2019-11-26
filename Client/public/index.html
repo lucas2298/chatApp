@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>AIT Chatbot</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -10,22 +11,30 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <link href="style.css" rel="stylesheet" />
+    <link href="styleDesktop.css" rel="stylesheet"/>
+    <link href="stylePhone.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div class = "Aureole-it float-sm-right">
+    <div class = "Aureole-it">
         <div class = 'row'>
-            <div class="col-3"><img src="./image/aitLogo.png" width="150px" height="100" alt="Aureole-it logo"></div>        
-            <div class="col"><h2 class="col-">Aureole Information Technology Inc.(AIT) Chatbot</h2></div>            
+            <div class="head-chat image"><img class="rounded-circle" src="./image/aitLogo.png" alt="Aureole-it logo"></div>        
+            <div class="head-chat header">
+                <h2><b style="font-size: 16px;">Aureole Information Technology Inc.(AIT) Chatbot</b></h2>
+            </div>
         </div>
         <div id="chat_log">
-        </div>  
-        <div id="chat_select">
         </div>
-        <div>
-            <input autocomplete="off" id="message" type="text" placeholder="Type something...">
-            <button id="send">Send</button>
+        <div id="chat_select" class="row">
+        </div>
+        <div class="input-groupp-chatbot">
+            <div class="input-group mb-3">
+                <textarea type="text" class="form-control" placeholder="Send a message..." name="inputMess" id="message" cols="40" rows="1"></textarea>
+                <div class="input-group-append">
+                    <button class="btn" id="send">
+                    </button>
+                </div>            
+            </div>
         </div>
     </div>
     <script src="chat.js"></script>
