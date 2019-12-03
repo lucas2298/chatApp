@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import running
 import base64
+import time
 
 app = Flask(__name__)
 @app.route('/')
@@ -27,6 +28,7 @@ def postdata():
     data = ""
     for tag in tags:
         data = data +"+"+tag
+    time.sleep(0.5)
     return data
 
 if __name__ == "__main__":

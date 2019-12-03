@@ -11,30 +11,41 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
     <link href="styleDesktop.css" rel="stylesheet"/>
     <link href="stylePhone.css" rel="stylesheet" />
 </head>
 
 <body>
-    <div class = "Aureole-it">
-        <div class = 'row'>
-            <div class="head-chat image"><img class="rounded-circle" src="./image/aitLogo.png" alt="Aureole-it logo"></div>        
-            <div class="head-chat header">
-                <h2><b style="font-size: 16px;">Aureole Information Technology Inc.(AIT) Chatbot</b></h2>
+    <div id = "chat-form-open">
+        <div class = "Aureole-it">
+            <div class = 'row chat'>
+                <div class="head-chat image"><img class="rounded-circle" src="./image/aitLogo.png" alt="Aureole-it logo"></div>        
+                <div class="head-chat header">
+                    <h2><b style="font-size: 16px;">Aureole Information Technology Inc.(AIT) Chatbot</b></h2>
+                </div>
             </div>
-        </div>
-        <div id="chat_log">
-        </div>
-        <div id="chat_select" class="row">
-        </div>
-        <div class="input-groupp-chatbot">
-            <div class="input-group mb-3">
-                <textarea type="text" class="form-control" placeholder="Send a message..." name="inputMess" id="message" cols="40" rows="1"></textarea>
-                <div class="input-group-append">
-                    <button class="btn" id="send">
-                    </button>
-                </div>            
+            <div id="chat_log">
             </div>
+            <div id="chat_select" class="row chat">
+            </div>
+            <div class="input-groupp-chatbot">
+                <div class="input-group mb-3">
+                    <textarea type="text" class="form-control" placeholder="Send a message..." name="inputMess" id="message" cols="40" rows="1"></textarea>
+                    <div class="input-group-append">
+                        <button class="btn send mess" id="send">
+                            <svg class="send" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24">
+                                <path d="M17.218,2.268L2.477,8.388C2.13,8.535,2.164,9.05,2.542,9.134L9.33,10.67l1.535,6.787c0.083,0.377,0.602,0.415,0.745,0.065l6.123-14.74C17.866,2.46,17.539,2.134,17.218,2.268 M3.92,8.641l11.772-4.89L9.535,9.909L3.92,8.641z M11.358,16.078l-1.268-5.613l6.157-6.157L11.358,16.078z"></path>
+                            </svg>
+                        </button>
+                    </div>            
+                </div>
+            </div>        
+        </div>        
+    </div>
+    <div class="close disabled-hover" id = "close-chat-btn">
+        <div class="close-chat">
+            <svg class="close" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17 17"><path d="M9.207 8.5l6.646 6.646-.707.707L8.5 9.207l-6.646 6.646-.707-.707L7.793 8.5 1.146 1.854l.707-.707L8.5 7.793l6.646-6.646.707.707L9.207 8.5z"></path></svg>
         </div>
     </div>
     <script src="chat.js"></script>

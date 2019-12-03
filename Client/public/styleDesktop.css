@@ -1,24 +1,20 @@
-
-
-*:focus {
-    outline: none !important;
+textarea:focus, 
+textarea.form-control:focus, 
+input.form-control:focus, 
+input[type=text]:focus, 
+input[type=password]:focus, 
+input[type=email]:focus, 
+input[type=number]:focus, 
+[type=text].form-control:focus, 
+[type=password].form-control:focus, 
+[type=email].form-control:focus, 
+[type=tel].form-control:focus, 
+[contenteditable].form-control:focus {
+  box-shadow: inset 0 -1px 0 #ddd;
 }
 
-textarea:hover, 
-input:hover, 
-textarea:active, 
-input:active, 
-textarea:focus, 
-input:focus,
-button:focus,
-button:active,
-button:hover,
-label:focus,
-.btn:active,
-.btn.active
-{
-    outline:0px !important;
-    -webkit-appearance:none;
+button:focus {
+    outline: 0 !important;
 }
 
 h2 {
@@ -30,17 +26,15 @@ h2 {
 .Aureole-it {
     max-width: 400px;
     position: fixed;
-    border: 1px solid rgb(61, 178, 208);    
-    border-radius: 10px;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 100px;
-    margin-right: 25px;
+    border: 1px solid rgb(61, 178, 208);
+    right: 25px;
+    bottom: 110px;
+    border-radius: 5px;
 }
 
-.row {
+.row.chat {
     margin: auto;
-    border-radius: 10px 10px 0px 0px;
+    border-radius: 5px 5px 0px 0px;
     overflow: hidden;
     background: linear-gradient(45deg, rgb(61, 178, 208) 45%, rgb(48, 141, 165) 100%);
 }
@@ -78,7 +72,7 @@ h2 {
 
 #chat_log {
     background: #ffffff;
-    height: calc(100vh - 60vh);
+    height: 40vh;
     padding: 10px;
     overflow-y: scroll;
     font-size: 16px;
@@ -96,7 +90,7 @@ label {
 }
 
 #message {
-    padding: 7px 15px;
+    padding-top: 4px;
     box-sizing: border-box;
     background: #eee;
     border: 1px solid #c9c9c9;
@@ -112,11 +106,6 @@ label {
     overflow: hidden;
 }
 
-#send {
-    color: #fff;
-    font-size: 18px;
-    height: 100%;
-}
 .input-group-append {
     background: #eee;
     border-radius: 20px;
@@ -138,7 +127,7 @@ label {
     border-radius: 45px;
     transition: all 0.3s ease 0s;
     margin: 7px;
-    border: 1px solid black;
+    border: 1px solid white;
 }
 .chat_bubble_select_list:hover {
     background-color: #2EE59D;
@@ -197,17 +186,59 @@ label {
 .input-groupp-chatbot {
     border-top: 0px;
     display: block;
-    /* position: absolute; */
     bottom: 0px;
     width: 100%;
     text-align: left;
+    height: 40px;
 }
+
 .input-groupp-chatbot .input-group.mb-3 {
-    margin: 0px 10px 0px;
+    margin: 10px;
     border: 1px solid #eee;
     background: #eee;
     border-radius: 20px;
     max-height: 32px;
     width: auto;
     overflow: hidden;
+}
+
+.btn-sm,
+.btn-sm:hover,
+.btn-sm:active,
+.btn-sm:visited {
+  outline: none !important;
+  border: none;
+  cursor: pointer;
+}
+.btn.send.mess {
+    padding: 2px;
+    width: 40px;
+    fill: #797373;
+}
+svg.send {
+    padding-bottom: 10px;
+}
+svg.close {
+    /* fill: white; */
+    width: 26px;
+    height: 26px;
+}
+
+.close-chat {
+    transform: rotate(0);
+    opacity: 1;
+    position: fixed;
+    bottom: 25px;
+    right: 22px;
+}
+
+.close {
+    width: 70px;
+    height: 70px;
+    background: rgb(61, 178, 208);
+    border-radius: 50%;
+    position: fixed; 
+    bottom: 25px;
+    right: 25px;
+    height: 70px;
 }

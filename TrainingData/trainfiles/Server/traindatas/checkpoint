@@ -1,0 +1,2 @@
+model_checkpoint_path: "D:\\chatapp\\TrainingData\\trainfiles\\Server\\traindatas\\model.tflearn"
+all_model_checkpoint_paths: "D:\\chatapp\\TrainingData\\trainfiles\\Server\\traindatas\\model.tflearn"
