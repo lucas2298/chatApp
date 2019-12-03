@@ -46,11 +46,7 @@ socket.on('chat', function(data){
     if (data.isSelectList) {
         class_suffix = '_select_list';
         let html = '\
-            <div class="chat_select">\
-                <div>\
-                    <button class="chat_bubble'+class_suffix+'" id="btn'+class_suffix+data.id+'" value="'+message+'" onClick="answerSelect(this.value)">'+message+'</button>\
-                </div>\
-            </div>\
+               <button class="col chat_bubble'+class_suffix+'" id="btn'+class_suffix+data.id+'" value="'+message+'" onClick="answerSelect(this.value)">'+message+'</button>\
         ';
         $('#chat_select').append(html);
         chat_scrolldown();
@@ -86,6 +82,7 @@ $(function(){
     });
     $('#message').on('keypress', function (event) { 
         if (event.which == 13 && $(this).val() != "") {
+            event.preventDefault();
             $("#chat_select").empty();
             socket.emit('chat', {
                 message: $(this).val(),
@@ -93,7 +90,21 @@ $(function(){
                 isSelectList: false,
                 id: 0
             });
-            $(this).val("");
+            $(this).val('');
+        }
+    });
+    $("#close-chat-btn").on("click", function(){
+        chat_form = document.getElementById("chat-form-open");
+        if (chat_form != null) {
+            chat_form.style.display = "none";
+            $("#chat-form-open").attr('id', 'chat-form-close')
+        }
+        else {
+            chat_form = document.getElementById("chat-form-close");
+            if (chat_form != null) {
+                chat_form.style.display = "block";
+                $("#chat-form-close").attr('id', 'chat-form-open');
+            }
         }
     });
 });

@@ -4,6 +4,7 @@ from flask import Flask, request
 import json
 import running
 import base64
+import time
 
 app = Flask(__name__)
 @app.route('/')
@@ -23,16 +24,12 @@ def postdata():
             messRecive = temp
             temp = ""
     userId = temp
-
-    messRes = running.responses(messRecive, userId)
-    messSum = ""
-    for mess in messRes:
-        messSum = messSum + '\n' + mess
-    messSum += '\n'
-
-    encodedBytes = base64.b64encode(messSum.encode("utf-8"))
-    encodedStr = str(encodedBytes, "utf-8")
-    return encodedStr
+    tags = running.responses(messRecive, userId)
+    data = ""
+    for tag in tags:
+        data = data +"+"+tag
+    time.sleep(0.5)
+    return data
 
 if __name__ == "__main__":
     app.run(port=4001)

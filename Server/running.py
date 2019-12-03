@@ -45,99 +45,11 @@ def classify(sentence):
     # return tuple of intent and probability
     return return_list
 
-locks = {}
-
-# Database
-import sqlite3
-conn = sqlite3.connect('./Server/database/chatbot.db', check_same_thread=False)
-table = conn.cursor()
-table.execute(
-    "select * from alltag"
-)
-temp = table.fetchall()
-# All tag
-tag = []
-lock = []
-question = []
-privateOnly = []
-response = []
-for i in temp:
-    tag.append(i[0])
-    lock.append(i[2])
-    question.append(i[3])
-    privateOnly.append(i[4])
-    response.append(i[5])
-
 def responses(sentence, userID, show_details=False):
     results = classify(sentence)
-    if not userID in locks:
-        locks[userID] = ''
     # if we have a classification then find the matching intent tag
+    data = []
     if results:
-        # loop as long as there are matches to process
-        for lenRes in range(0, len(results)):
-            for i in range(0, len(tag)):
-                # find a tag matching the first result
-                if tag[i] == results[lenRes][0]:
-                    # Kiem tra tinh trang lock
-                    if locks[userID] == '':
-                        if privateOnly[i] == "no":
-                            # Them lock cho user
-                            locks[userID] = lock[i]
-                            # Tra ket qua
-                            data = []
-                            data.append(response[i])
-                            table.execute(
-                                "select selects from selectlist "
-                                "where tag = :tag", {'tag': tag[i]}
-                            )
-                            selectList = table.fetchall()
-                            for s in selectList:
-                                data.append(s[0])
-                            if question[i] != "":
-                                data.append(question[i]+'+')
-                            return data
-                    else:
-                        table.execute(
-                            "select key from key "
-                            "where tag = :tag", {'tag': tag[i]}
-                        )
-                        temp = table.fetchall()
-                        for key in temp:
-                            if locks[userID] == key[0]:
-                                data = []
-                                data.append(response[i])
-                                table.execute(
-                                    "select selects from selectlist "
-                                    "where tag = :tag", {'tag': tag[i]}
-                                )
-                                selectList = table.fetchall()
-                                for s in selectList:
-                                    data.append(s[0])
-                                if question[i] != "":
-                                    data.append(question[i]+'+')
-                                return data
-                    break
-            for i in range(0, len(tag)):
-                # find a tag matching the first result
-                if tag[i] == results[lenRes][0]:
-                    if privateOnly[i] == "no":
-                        # Them lock cho user
-                        locks[userID] = lock[i]
-                        # Tra ket qua
-                        data = []
-                        data.append(response[i])
-                        table.execute(
-                            "select selects from selectlist "
-                            "where tag = :tag", {'tag': tag[i]}
-                        )
-                        selectList = table.fetchall()
-                        for s in selectList:
-                            data.append(s[0])
-                        if question[i] != "":
-                            data.append(question[i]+'+')
-                        return data
-                    break
-
-conn.commit()
-# conn.close()
+        for result in results:
+            data.append(result[0])
+    return data

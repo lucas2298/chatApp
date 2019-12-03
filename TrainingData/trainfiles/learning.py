@@ -4,7 +4,6 @@
 #import algorithm
 import numpy as np
 import random
-import sqlite3
 
 #import NLP lib
 import tflearn
@@ -15,7 +14,9 @@ stemmer = LancasterStemmer()
 
 #Loading data training
 
-conn = sqlite3.connect('./Server/database/chatbot.db')
+import pymysql
+
+db = pymysql.connect("localhost", "root", "", "chatbot")
 
 #Classification
 words = [] #All word in every sentence
@@ -23,10 +24,10 @@ classes = []
 documents = []
 stop_words = ['?', '.', ',']
 
-table = conn.cursor()
+table = db.cursor()
 
 table.execute(
-    'select * from patterns'
+    'select tag, patterns from patterns'
 )
 data = table.fetchall()
 
@@ -94,6 +95,6 @@ model.save('./Server/traindatas/model.tflearn')
 import pickle
 pickle.dump( {'words':words, 'classes':classes, 'train_x':train_x, 'train_y':train_y}, open( "./Server/traindatas/training_data", "wb" ) )
 
-conn.commit()
+db.commit()
 
-conn.close()
+db.close()

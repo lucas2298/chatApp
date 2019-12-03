@@ -1,0 +1,142 @@
+body {
+    font-family: 'Nunito';
+}
+
+h2 {
+    font-size: 18px;
+    padding: 10px 20px;
+    color: #575ed8;
+}
+
+.Aureole-it {
+    max-width: 400px;
+    margin: 30px auto;
+    border: 1px solid #ddd;
+    box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+}
+.row {
+    margin: auto;
+}
+.head-chat {
+    /* background: #3aabc8; */
+    float: left;
+    width: 50%;
+    height: 100%;
+    border: 1px solid black;
+}
+.head-chat img {
+    width: 100px;
+    height: 75px;
+    display: block;
+    margin: auto;
+    float: left;
+}
+.head-chat h2 {
+    font-size: 14px;
+    height: 75px;
+    margin: auto;
+}
+
+#chat_log {
+    background: #ffffff;
+    height: calc(100vh - 400px);
+    padding: 10px;
+    overflow-y: scroll;
+    font-size: 16px;
+    position: relative;
+}
+
+label {
+    box-sizing: border-box;
+    display: block;
+    padding: 10px 20px;
+}
+
+#message {
+    padding: 10px 20px;
+    box-sizing: border-box;
+    background: #eee;
+    border: 0;
+    display: block;
+    height: 50px;
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    font-family: Nunito;
+    font-size: 16px;
+}
+
+#send {
+    background: #575ed8;
+    color: #fff;
+    font-size: 18px;
+    border: 0;
+    padding: 5px;
+    height: 40px;
+    width: 100%;
+    border-radius: 0 0 2px 2px;
+}
+
+#send:hover {
+    background-color: #555;
+}
+.chat_bubble_select_list:hover {
+    background-color: rgb(177, 174, 174);
+}
+
+*:focus {
+    outline: none !important;
+}
+
+
+.chat_triangle, .chat_triangle_user {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    left: -18px;
+    border-width: 0 18px 13px 0;
+    border-color: transparent #ebeff4 transparent transparent;
+}
+.chat_triangle_user{
+    left: auto;
+    right: -18px;
+    border-width: 13px 18px 0 0;
+    border-color: #3eb2d0 transparent transparent transparent;
+}
+.chat_bubble, .chat_bubble_user, .chat_bubble_select_list {
+    position: relative;
+    float: left;
+    background-color: #ebeff4;
+    color: #6a6b6c;
+    margin-top: 10px;
+    line-height: 35px;
+    padding: 10px 25px 10px 25px;
+    margin-left: 20px;
+    font-size: 15px;
+}
+
+.chat_bubble {
+    border-radius: 0rem 1rem 1rem 1rem;
+}
+.chat_bubble_user, .chat_bubble_select_list {
+    border-radius: 1rem 0rem 1rem 1rem;
+}
+.chat_bubble_select_list {
+    border-radius: 1rem;
+}
+
+.chat_bubble_user, .chat_bubble_select_list {
+    float: right;
+    margin-left: 0px;
+    margin-right: 20px;
+    background-color: #3eb2d0;
+    color: #dff2f7;
+}
+
+.chat_line {
+    overflow: hidden;
+    width: 100%;
+}
